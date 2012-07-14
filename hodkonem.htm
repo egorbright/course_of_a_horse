@@ -1,0 +1,452 @@
+﻿<html>
+<head>
+<title>Игра "Ход конем"</title>
+<style type="text/css">
+body {
+	height: 100%;
+}
+
+table {
+	border-spacing: 0px!important;
+	border-collapse: collapse;
+}
+
+tr {
+	border: 0px;
+	border-collapse: collapse;
+}
+
+td {
+	border: 0px;
+	border-collapse: collapse;
+}
+
+.input-style {
+	border: 1px solid #888;
+	border-radius: 3px;
+	
+	background-image: linear-gradient(bottom, #420252 0%, #AB00D6 100%);
+	background-image: -o-linear-gradient(bottom, #420252 0%, #AB00D6 100%);
+	background-image: -moz-linear-gradient(bottom, #420252 0%, #AB00D6 100%);
+	background-image: -webkit-linear-gradient(bottom, #420252 0%, #AB00D6 100%);
+	background-image: -ms-linear-gradient(bottom, #420252 0%, #AB00D6 100%);
+
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, #420252),
+		color-stop(1, #AB00D6)
+	);
+	
+	color: #fff;
+	
+	width: 100%;
+	height: 100%;
+	
+	cursor: pointer;
+}
+
+.onePlus {
+	border: 1px solid #888;
+	border-radius: 3px;
+
+	background-image: linear-gradient(bottom, #020D00 0%, #2EA300 100%);
+	background-image: -o-linear-gradient(bottom, #020D00 0%, #2EA300 100%);
+	background-image: -moz-linear-gradient(bottom, #020D00 0%, #2EA300 100%);
+	background-image: -webkit-linear-gradient(bottom, #020D00 0%, #2EA300 100%);
+	background-image: -ms-linear-gradient(bottom, #020D00 0%, #2EA300 100%);
+
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, #020D00),
+		color-stop(1, #2EA300)
+	);
+	
+	width: 100%;
+	height: 100%;
+	
+	cursor: pointer;
+}
+.oneMinus {
+	border: 1px solid #888;
+	border-radius: 3px;
+	
+	background-image: linear-gradient(bottom, #C70049 100%, #29011B 0%);
+	background-image: -o-linear-gradient(bottom, #C70049 100%, #29011B 0%);
+	background-image: -moz-linear-gradient(bottom, #C70049 100%, #29011B 0%);
+	background-image: -webkit-linear-gradient(bottom, #C70049 100%, #29011B 0%);
+	background-image: -ms-linear-gradient(bottom, #C70049 100%, #29011B 0%);
+
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(1, #C70049),
+		color-stop(0, #29011B)
+	);
+	
+	width: 100%;
+	height: 100%;
+}
+.twoPlus {
+	border: 1px solid #888;
+	border-radius: 3px;
+	
+	background-image: linear-gradient(bottom, #0050C7 100%, #001D52 0%);
+	background-image: -o-linear-gradient(bottom, #0050C7 100%, #001D52 0%);
+	background-image: -moz-linear-gradient(bottom, #0050C7 100%, #001D52 0%);
+	background-image: -webkit-linear-gradient(bottom, #0050C7 100%, #001D52 0%);
+	background-image: -ms-linear-gradient(bottom, #0050C7 100%, #001D52 0%);
+
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(1, #0050C7),
+		color-stop(0, #001D52)
+	);
+	
+	width: 100%;
+	height: 100%;
+	
+	cursor: pointer;
+}
+.twoMinus {
+	border: 1px solid #888;
+	border-radius: 3px;	
+	
+	background: black;
+	
+	width: 100%;
+	height: 100%;
+}
+
+
+
+#menu {width:110pt}
+</style>
+
+<script language="JavaScript">
+vid=1;
+hod=0;
+vsego=0;
+kolSledKlet=0;
+klavUzhe=0;
+kletka=new Array();
+sledKletka=new Array();
+sledKletkaVes=new Array();
+xx=new Array(1, 2, 2, 1,-1,-2,-2,-1);
+yy=new Array(2, 1,-1,-2,-2,-1, 1, 2);
+A=10; B=10;
+if(location.search.length>0)
+ {
+  par=location.search.substr(6,2);
+  if(par=="0")
+   {
+    par=parseInt(prompt("Введите длину доски",10));
+    if(!isNaN(par)) A=par;
+    par=parseInt(prompt("Введите ширину доски",10));
+    if(!isNaN(par)) B=par;
+    if(A<3) A=3;
+    if(A>20) A=20;
+    if(B<3) B=3;
+    if(B>20) B=20;
+   }
+  else
+   {
+    par=parseInt(par);
+    if(!isNaN(par))
+     {
+      A=par;
+      if(A<5) A=5;
+      if(A>15) A=15;
+      B=A;
+     }
+   }
+ }
+S=A*B;
+host=location.host.toUpperCase();
+
+function sdelanHod(kuda)
+{
+ if(hod==0)
+  {
+   hod=1;
+   if(hod>vsego || kuda!=kletka[hod]) vsego=hod;
+   kletka[hod]=kuda;
+   document.doska.elements[kuda].value=hod;
+   aktivKletka(kuda);
+   obnovPodskazki();
+  }
+ else
+  {
+   if(isNaN(parseInt(document.doska.elements[kuda].value)))
+    {
+     yn=Math.floor(kuda/A);
+     xn=kuda-yn*A;
+     y=Math.floor(kletka[hod]/A);
+     x=kletka[hod]-y*A;
+     if(Math.abs(yn-y)==1 && Math.abs(xn-x)==2 || Math.abs(yn-y)==2 && Math.abs(xn-x)==1)
+      {
+       hod++;
+       if(hod==S && vsego<S) pozdrav=1; else pozdrav=0;
+       if(hod>vsego || kuda!=kletka[hod]) vsego=hod;
+       kletka[hod]=kuda;
+       document.doska.elements[kuda].value=hod;
+       deaktivKletka(kletka[hod-1]);
+       aktivKletka(kuda);
+       obnovPodskazki();
+       if(pozdrav==1) alert("Поздравляю, у вас получилось !!!");
+      }
+    }
+   else
+    {
+     if(kuda==kletka[hod])
+      {
+       hod--; document.doska.elements[kuda].value="";
+       deaktivKletka(kletka[hod+1]);
+       if(hod>0) aktivKletka(kletka[hod]);
+       obnovPodskazki();
+      }
+     else
+      {
+       nHod=document.doska.elements[kuda].value;
+       if(confirm("Вернуться к ходу № "+nHod+" ?"))
+        {
+         predHod=hod; hod=+nHod;
+         deaktivKletka(kletka[predHod]);
+         aktivKletka(kletka[hod]);
+         for(i=hod+1; i<=predHod; i++)
+          document.doska.elements[kletka[i]].value="";
+         obnovPodskazki();
+        }
+      }
+    }
+  }
+ if(hod==0) document.doska.elements[kletka[1]].blur();
+ else obnovFocus();
+}
+
+function aktivKletka(k)
+{
+ document.doska.elements[k].style.fontWeight="bold";
+ document.doska.elements[k].style.color="#ffffff";
+ document.doska.elements[k].value=document.doska.elements[k].value; //для глюкавой оперы
+}
+
+function deaktivKletka(k)
+{
+ document.doska.elements[k].style.fontWeight="normal";
+ document.doska.elements[k].style.color="#ffffff";
+ document.doska.elements[k].value=document.doska.elements[k].value; //для глюкавой оперы
+}
+
+function obnovFocus()
+{
+ if(hod>0) document.doska.elements[kletka[hod]].focus();
+}
+
+function obnovPodskazki()
+{
+ if(kolSledKlet>0)
+  {
+   for(i=1; i<=kolSledKlet; i++)
+    {
+     if(isNaN(parseInt(document.doska.elements[sledKletka[i]].value)))
+      document.doska.elements[sledKletka[i]].value="";
+     document.doska.elements[sledKletka[i]].title="";
+    }
+   kolSledKlet=0;
+  }
+ if(document.menu.podskazki.value=="Подсказки" || hod==0) return;
+ y=Math.floor(kletka[hod]/A);
+ x=kletka[hod]-y*A;
+ minVes=0;
+ for(i=0; i<8; i++)
+  {
+   xn=x+xx[i]; yn=y+yy[i];
+   if(xn>=0 && xn<A && yn>=0 && yn<B && document.doska.elements[yn*A+xn].value=="")
+    {
+     kolSledKlet+=1;
+     sledKletka[kolSledKlet]=yn*A+xn;
+     tekVes=0;
+     for(j=0; j<8; j++)
+      {
+       xnn=xn+xx[j]; ynn=yn+yy[j];
+       if(xnn!=xn && ynn!=yn && xnn>=0 && xnn<A && ynn>=0 && ynn<B && document.doska.elements[ynn*A+xnn].value=="")
+        tekVes+=1;
+      }
+     sledKletkaVes[kolSledKlet]=tekVes;
+     if(tekVes>0)
+      {
+       if(minVes==0) minVes=tekVes;
+       if(tekVes<minVes) minVes=tekVes;
+      }
+    }
+  }
+  
+  
+  var elements = document.getElementById('table-doska').getElementsByTagName('input');
+  
+  for (i=0; i<elements.length; i++) {
+	elements[i].setAttribute('class', 'input-style');
+  }
+  
+ for(i=1; i<=kolSledKlet; i++)
+  {
+   skv=sledKletkaVes[i];
+   if(skv==minVes) inputClass="onePlus"; else inputClass="oneMinus";
+   if(skv==1) inputClass="twoPlus";
+   if(skv==0) if(hod==S-1) inputClass="twoPlus"; else inputClass="twoMinus";
+   document.doska.elements[sledKletka[i]].setAttribute('class', inputClass);
+   document.doska.elements[sledKletka[i]].title="Следующих ходов: "+skv;
+  }
+}
+
+function novayaIgra()
+{
+	location.reload();
+}
+
+function izmenPodskazki()
+{
+ if(document.menu.podskazki.value=="Подсказки") document.menu.podskazki.value="Убрать подсказки";
+ else document.menu.podskazki.value="Подсказки";
+ obnovPodskazki();
+}
+
+function izmenStyle()
+{
+ for(i=0; i<S; i++)
+  {
+   document.doska.elements[i].value=document.doska.elements[i].value; //для глюкавой оперы
+  }
+}
+
+function perezapusk()
+{
+ if(hod==0 || confirm("Прервать текущую игру ?"))
+  {
+   document.forma.size.value=document.menu.size.value;
+   document.forma.submit();
+  }
+ else doskaInfo();
+}
+
+function doskaInfo()
+{
+ if(document.menu.size.length==13) op=12; else op=A-5;
+ document.menu.size.options[op].selected=true;
+}
+
+function klavisha(kc,on)
+{
+ if(on==1) klavUzhe=1;
+ if(on==2)
+  {
+   ku=klavUzhe;
+   klavUzhe=0;
+   if(ku==1) return;
+  }
+ if(kc==32) izmenVid();
+ if(vid==1)
+  {
+   if(kc==37) if(hod>0) sdelanHod(kletka[hod]);
+   if(kc==39) if(hod<vsego) sdelanHod(kletka[hod+1]);
+  }
+}
+</script>
+</head>
+
+<body leftmargin=0 topmargin=0 marginwidth=0 marginheight=0 onkeydown="klavisha(event.keyCode,1); return false;" onkeypress="klavisha(event.keyCode,2); return false;" onkeyup="return false;" id="body" onresize="setSizes()">
+<table id="verstka" border="0" width="100%" height="100%" cellspacing=0>
+	<tr>
+		<td align="center" valign="center" onclick="obnovFocus();" onmouseover="obnovFocus();">
+			<form name="menu">
+				<table border=0>
+					<tr>
+						<td>
+							<input type=button id="menu" value="Новая игра" onclick="novayaIgra();">
+						</td>
+						<td>
+							<input type=button name="podskazki" id="menu" value="Подсказки" onclick="izmenPodskazki();">
+						</td>
+						<td>
+							<select name="size" id="menu" onchange="perezapusk();">
+								<script language="JavaScript">
+									for(i=5; i<16; i++)
+										document.write("<option value="+eval(i)+">Доска: "+eval(i)+"x"+eval(i)+"</option>");
+										document.write("<option value=0>Доска: AxB</option>");
+										if(A!=B || A<5 || A>15) document.write("<option>Доска: "+eval(A)+"x"+eval(B)+"</option>");
+								</script>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</form>
+			
+			<form name="forma" method=get>
+			<input type=hidden name="size">
+			</form>
+
+<table border="0" cellspacing="0" cellpadding="0" id="table-doska">
+<form name="doska">
+<script language="JavaScript">
+doskaInfo();
+for(i=0; i<B; i++)
+ {
+  document.write('<tr>');
+  for(j=0; j<A; j++)
+   document.write('<td class="input-cell"><input type="button" value="" class="input-style" onclick="sdelanHod('+eval(i*A+j)+');" onfocus="obnovFocus();">');
+ }
+</script>
+</td></tr></form></table></table>
+<div id="moreStyle"></div>
+<script type="text/javascript">
+	function getParam(par){
+		var tmp = new Array();      // два вспомагательных    
+		var tmp2 = new Array();     // массива    
+		var param = new Array();    
+				
+		var get = location.search;  // строка GET запроса    
+		if(get != '')    
+		{    
+			tmp = (get.substr(1)).split('&');   // разделяем переменные    
+			for(var i=0; i < tmp.length; i++)    
+			{    
+				tmp2 = tmp[i].split('=');       // массив param будет содержать    
+				param[tmp2[0]] = tmp2[1];       // пары ключ(имя переменной)->значение    
+			}
+		}
+		return param[par];
+	}
+	
+	function getSize()
+	{
+	  var h = document.getElementById('body').clientHeight;
+	  var w = document.getElementById('body').clientWidth;
+	  
+	  if (h < w) {
+		return h;
+	  } else {
+		return w;
+	  }
+	}
+	
+	
+	function setSizes() {
+		document.getElementById('table-doska').style.width = getSize() - 50;
+		document.getElementById('table-doska').style.height = getSize() - 50;
+	
+		var percentage = 100 / getParam('size');
+	
+		document.getElementById('moreStyle').innerHTML = '<style>.input-cell { width: ' + percentage + '%; }</style>';
+	}
+	
+	setSizes();
+</script>
+</body>
+</html>
